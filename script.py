@@ -70,8 +70,8 @@ class  Script(object):
   USER_DETAILS = "<b><u>📄 USERBOT DETAILS</b></u>\n\n<b>➣ NAME:</b> <code>{}</code>\n<b>➣ USER ID:</b> <code>{}</code>\n<b>➣ USERNAME:</b> @{}"  
          
   TEXT = """
-╔════❰ ғᴏʀᴡᴀʀᴅ sᴛᴀᴛᴜs  ❱═❍⊱❁۪۪
-║  @Real_Pirates 🏴‍☠️
+╔═══❰ ғᴏʀᴡᴀʀᴅ sᴛᴀᴛᴜs ❱═⊱❁۪۪
+║ <b>@Real_Pirates 🏴‍☠️</b>
 ║╭━━━━━━━━━━━━━━━➣
 ║┣⪼<b>🕵 ғᴇᴄʜᴇᴅ Msɢ :</b> <code>{}</code>
 ║┃
