@@ -216,17 +216,34 @@ async def copy(user, bot, msg, m, sts):
 # Ask Doubt on telegram @KingVJ01
 
 async def forward(user, bot, msg, m, sts, protect):
-   try:                             
-     await bot.forward_messages(
-           chat_id=sts.get('TO'),
-           from_chat_id=sts.get('FROM'), 
-           protect_content=protect,
-           message_ids=msg)
-   except FloodWait as e:
-     await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
-     await asyncio.sleep(e.value)
-     await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
-     await forward(bot, msg, m, sts, protect)
+    try:
+        message = await bot.get_messages(sts.get('FROM'), msg)
+        chat_id = sts.get('TO')
+
+        if message.photo:
+            await bot.send_photo(
+                chat_id=chat_id,
+                photo=message.photo.file_id,
+                protect_content=protect
+            )
+        elif message.video:
+            await bot.send_video(
+                chat_id=chat_id,
+                video=message.video.file_id,
+                protect_content=protect
+            )
+        else:
+            await bot.forward_messages(
+                chat_id=chat_id,
+                from_chat_id=sts.get('FROM'),
+                protect_content=protect,
+                message_ids=msg
+            )
+    except FloodWait as e:
+        await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
+        await asyncio.sleep(e.value)
+        await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
+        await forward(user, bot, msg, m, sts, protect)
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
