@@ -187,7 +187,7 @@ async def pub_(bot, message):
 
 async def copy(user, bot, msg, m, sts):
     try:                               
-        hide_caption = sts.get("hide_caption", False)  # Get the "Hide Caption" setting
+        hide_caption = sts.get("hide_caption", False)  # Get "Hide Caption" setting
         
         if msg.get("media"):
             caption = None if hide_caption else msg.get("caption")  # Remove caption if enabled
@@ -203,18 +203,17 @@ async def copy(user, bot, msg, m, sts):
             await bot.copy_message(
                 chat_id=sts.get('TO'),
                 from_chat_id=sts.get('FROM'),
-                caption=None if hide_caption else msg.get("caption"),
                 message_id=msg.get("msg_id"),
+                caption=None if hide_caption else msg.get("caption"),
                 reply_markup=msg.get('button'),
                 protect_content=msg.get("protect")
             )
     except FloodWait as e:
-        await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
+        print(f"FloodWait error: Sleeping for {e.value} seconds")
         await asyncio.sleep(e.value)
-        await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
-        await copy(user, bot, msg, m, sts)
+        await copy(user, bot, msg, m, sts)  # Retry forwarding
     except Exception as e:
-        print(e)
+        print(f"Error in copy function: {e}")
         sts.add('deleted')
 
 
