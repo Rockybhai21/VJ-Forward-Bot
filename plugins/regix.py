@@ -219,12 +219,12 @@ async def forward(user, bot, msg, m, sts, protect):
     try:
         for message_id in msg:
             message = await bot.get_messages(sts.get('FROM'), message_id)
-            if message.photo or message.video:
+            if message.photo or message.video or message.document or message.audio:
                 await bot.copy_message(
                     chat_id=sts.get('TO'),
                     from_chat_id=sts.get('FROM'),
                     message_id=message_id,
-                    caption="Real"  # Remove caption
+                    caption=None  # Ensure caption is completely removed
                 )
             else:
                 await bot.forward_messages(
