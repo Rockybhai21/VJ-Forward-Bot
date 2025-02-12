@@ -633,100 +633,92 @@ def size_button(size):
 # Ask Doubt on telegram @KingVJ01
 
 async def filters_buttons(user_id):
-  filter = await get_configs(user_id)
-  filters = filter['filters']
-  buttons = [[
-       InlineKeyboardButton('🏷️ Forward tag',
-                    callback_data=f'settings_#updatefilter-forward_tag-{filter["forward_tag"]}'),
-       InlineKeyboardButton('✅' if filter['forward_tag'] else '❌',
-                    callback_data=f'settings#updatefilter-forward_tag-{filter["forward_tag"]}')
-       ],[
-       InlineKeyboardButton('🖍️ Texts',
-                    callback_data=f'settings_#updatefilter-text-{filters["text"]}'),
-       InlineKeyboardButton('✅' if filters['text'] else '❌',
-                    callback_data=f'settings#updatefilter-text-{filters["text"]}')
-       ],[
-       InlineKeyboardButton('📁 Documents',
-                    callback_data=f'settings_#updatefilter-document-{filters["document"]}'),
-       InlineKeyboardButton('✅' if filters['document'] else '❌',
-                    callback_data=f'settings#updatefilter-document-{filters["document"]}')
-       ],[
-       InlineKeyboardButton('🎞️ Videos',
-                    callback_data=f'settings_#updatefilter-video-{filters["video"]}'),
-       InlineKeyboardButton('✅' if filters['video'] else '❌',
-                    callback_data=f'settings#updatefilter-video-{filters["video"]}')
-       ],[
-       InlineKeyboardButton('📷 Photos',
-                    callback_data=f'settings_#updatefilter-photo-{filters["photo"]}'),
-       InlineKeyboardButton('✅' if filters['photo'] else '❌',
-                    callback_data=f'settings#updatefilter-photo-{filters["photo"]}')
-       ],[
-       InlineKeyboardButton('🎧 Audios',
-                    callback_data=f'settings_#updatefilter-audio-{filters["audio"]}'),
-       InlineKeyboardButton('✅' if filters['audio'] else '❌',
-                    callback_data=f'settings#updatefilter-audio-{filters["audio"]}')
-       ],[
-       InlineKeyboardButton('📝 Hide Caption',
-                    callback_data=f'settings_#updatefilter-hide_caption-{filter["hide_caption"]}'),
-       InlineKeyboardButton('✅' if filter['hide_caption'] else '❌',
-                    callback_data=f'settings#updatefilter-hide_caption-{filter["hide_caption"]}')
-       ],[
-       InlineKeyboardButton('⫷ Back',
-                    callback_data="settings#main"),
-       InlineKeyboardButton('Next ⫸',
-                    callback_data="settings#nextfilters")
-       ]]
-  return InlineKeyboardMarkup(buttons)
+    filter = await get_configs(user_id)
+    filters = filter['filters']
+
+    buttons = [[
+        InlineKeyboardButton('🏷️ Forward tag', callback_data=f'settings#updatefilter-forward_tag'),
+        InlineKeyboardButton('✅' if filter['forward_tag'] else '❌', callback_data=f'settings#updatefilter-forward_tag')
+    ], [
+        InlineKeyboardButton('🖍️ Texts', callback_data=f'settings#updatefilter-text'),
+        InlineKeyboardButton('✅' if filters['text'] else '❌', callback_data=f'settings#updatefilter-text')
+    ], [
+        InlineKeyboardButton('📁 Documents', callback_data=f'settings#updatefilter-document'),
+        InlineKeyboardButton('✅' if filters['document'] else '❌', callback_data=f'settings#updatefilter-document')
+    ], [
+        InlineKeyboardButton('🎞️ Videos', callback_data=f'settings#updatefilter-video'),
+        InlineKeyboardButton('✅' if filters['video'] else '❌', callback_data=f'settings#updatefilter-video')
+    ], [
+        InlineKeyboardButton('📷 Photos', callback_data=f'settings#updatefilter-photo'),
+        InlineKeyboardButton('✅' if filters['photo'] else '❌', callback_data=f'settings#updatefilter-photo')
+    ], [
+        InlineKeyboardButton('🎧 Audios', callback_data=f'settings#updatefilter-audio'),
+        InlineKeyboardButton('✅' if filters['audio'] else '❌', callback_data=f'settings#updatefilter-audio')
+    ], [
+        InlineKeyboardButton('🎤 Voices', callback_data=f'settings#updatefilter-voice'),
+        InlineKeyboardButton('✅' if filters['voice'] else '❌', callback_data=f'settings#updatefilter-voice')
+    ], [
+        InlineKeyboardButton('🎭 Animations', callback_data=f'settings#updatefilter-animation'),
+        InlineKeyboardButton('✅' if filters['animation'] else '❌', callback_data=f'settings#updatefilter-animation')
+    ], [
+        InlineKeyboardButton('🃏 Stickers', callback_data=f'settings#updatefilter-sticker'),
+        InlineKeyboardButton('✅' if filters['sticker'] else '❌', callback_data=f'settings#updatefilter-sticker')
+    ], [
+        InlineKeyboardButton('▶️ Skip duplicate', callback_data=f'settings#updatefilter-duplicate'),
+        InlineKeyboardButton('✅' if filter['duplicate'] else '❌', callback_data=f'settings#updatefilter-duplicate')
+    ], [
+        InlineKeyboardButton('📊 Poll', callback_data=f'settings#updatefilter-poll'),
+        InlineKeyboardButton('✅' if filters['poll'] else '❌', callback_data=f'settings#updatefilter-poll')
+    ], [
+        InlineKeyboardButton('🔒 Secure message', callback_data=f'settings#updatefilter-protect'),
+        InlineKeyboardButton('✅' if filter['protect'] else '❌', callback_data=f'settings#updatefilter-protect')
+    ], [
+        InlineKeyboardButton('📝 Hide Caption', callback_data=f'settings#updatefilter-hide_caption'),
+        InlineKeyboardButton('✅' if filter['hide_caption'] else '❌', callback_data=f'settings#updatefilter-hide_caption')
+    ], [
+        InlineKeyboardButton('⫷ Back', callback_data="settings#main"),
+        InlineKeyboardButton('Next ⫸', callback_data="settings#nextfilters")
+    ]]
+
+    return InlineKeyboardMarkup(buttons)
+
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
 async def filters_buttons(user_id):
-  filter = await get_configs(user_id)
-  filters = filter['filters']
-  buttons = [[
-       InlineKeyboardButton('🏷️ Forward tag',
-                    callback_data=f'settings_#updatefilter-forward_tag-{filter["forward_tag"]}'),
-       InlineKeyboardButton('✅' if filter['forward_tag'] else '❌',
-                    callback_data=f'settings#updatefilter-forward_tag-{filter["forward_tag"]}')
-       ],[
-       InlineKeyboardButton('🖍️ Texts',
-                    callback_data=f'settings_#updatefilter-text-{filters["text"]}'),
-       InlineKeyboardButton('✅' if filters['text'] else '❌',
-                    callback_data=f'settings#updatefilter-text-{filters["text"]}')
-       ],[
-       InlineKeyboardButton('📁 Documents',
-                    callback_data=f'settings_#updatefilter-document-{filters["document"]}'),
-       InlineKeyboardButton('✅' if filters['document'] else '❌',
-                    callback_data=f'settings#updatefilter-document-{filters["document"]}')
-       ],[
-       InlineKeyboardButton('🎞️ Videos',
-                    callback_data=f'settings_#updatefilter-video-{filters["video"]}'),
-       InlineKeyboardButton('✅' if filters['video'] else '❌',
-                    callback_data=f'settings#updatefilter-video-{filters["video"]}')
-       ],[
-       InlineKeyboardButton('📷 Photos',
-                    callback_data=f'settings_#updatefilter-photo-{filters["photo"]}'),
-       InlineKeyboardButton('✅' if filters['photo'] else '❌',
-                    callback_data=f'settings#updatefilter-photo-{filters["photo"]}')
-       ],[
-       InlineKeyboardButton('🎧 Audios',
-                    callback_data=f'settings_#updatefilter-audio-{filters["audio"]}'),
-       InlineKeyboardButton('✅' if filters['audio'] else '❌',
-                    callback_data=f'settings#updatefilter-audio-{filters["audio"]}')
-       ],[
-       InlineKeyboardButton('📝 Hide Caption',
-                    callback_data=f'settings_#updatefilter-hide_caption-{filter["hide_caption"]}'),
-       InlineKeyboardButton('✅' if filter['hide_caption'] else '❌',
-                    callback_data=f'settings#updatefilter-hide_caption-{filter["hide_caption"]}')
-       ],[
-       InlineKeyboardButton('⫷ Back',
-                    callback_data="settings#main"),
-       InlineKeyboardButton('Next ⫸',
-                    callback_data="settings#nextfilters")
-       ]]
-  return InlineKeyboardMarkup(buttons)
+    filter = await get_configs(user_id)
+    filters = filter['filters']
+    
+    buttons = [[
+        InlineKeyboardButton('🏷️ Forward tag', callback_data=f'settings#updatefilter-forward_tag'),
+        InlineKeyboardButton('✅' if filter['forward_tag'] else '❌', callback_data=f'settings#updatefilter-forward_tag')
+    ], [
+        InlineKeyboardButton('🖍️ Texts', callback_data=f'settings#updatefilter-text'),
+        InlineKeyboardButton('✅' if filters['text'] else '❌', callback_data=f'settings#updatefilter-text')
+    ], [
+        InlineKeyboardButton('📁 Documents', callback_data=f'settings#updatefilter-document'),
+        InlineKeyboardButton('✅' if filters['document'] else '❌', callback_data=f'settings#updatefilter-document')
+    ], [
+        InlineKeyboardButton('🎞️ Videos', callback_data=f'settings#updatefilter-video'),
+        InlineKeyboardButton('✅' if filters['video'] else '❌', callback_data=f'settings#updatefilter-video')
+    ], [
+        InlineKeyboardButton('📷 Photos', callback_data=f'settings#updatefilter-photo'),
+        InlineKeyboardButton('✅' if filters['photo'] else '❌', callback_data=f'settings#updatefilter-photo')
+    ], [
+        InlineKeyboardButton('🎧 Audios', callback_data=f'settings#updatefilter-audio'),
+        InlineKeyboardButton('✅' if filters['audio'] else '❌', callback_data=f'settings#updatefilter-audio')
+    ], [
+        InlineKeyboardButton('📝 Hide Caption', callback_data=f'settings#updatefilter-hide_caption'),
+        InlineKeyboardButton('✅' if filter['hide_caption'] else '❌', callback_data=f'settings#updatefilter-hide_caption')
+    ], [
+        InlineKeyboardButton('⫷ Back', callback_data="settings#main"),
+        InlineKeyboardButton('Next ⫸', callback_data="settings#nextfilters")
+    ]]
+    
+    return InlineKeyboardMarkup(buttons)
+
 
 
 # Don't Remove Credit Tg - @VJ_Botz
