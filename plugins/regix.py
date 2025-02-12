@@ -236,7 +236,7 @@ async def forward(user, bot, msg, m, sts, protect):
                     chat_id=sts.get('TO'),
                     from_chat_id=sts.get('FROM'),
                     protect_content=protect,
-                    message_ids=message_id
+                    message_ids=message_id,
                     caption=None
                 )
                 
