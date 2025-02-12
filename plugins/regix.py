@@ -238,13 +238,7 @@ async def forward(user, bot, msg, m, sts, protect):
                     protect_content=protect,
                     message_ids=message_id
                 )
-            else:
-                await bot.forward_messages(
-                    chat_id=sts.get('TO'),
-                    from_chat_id=sts.get('FROM'),
-                    protect_content=protect,
-                    message_ids=message_id
-                )
+                
 
     except FloodWait as e:
         await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
