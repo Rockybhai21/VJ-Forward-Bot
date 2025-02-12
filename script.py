@@ -71,7 +71,7 @@ class  Script(object):
          
   TEXT = """
 ╔═══❰ ғᴏʀᴡᴀʀᴅ sᴛᴀᴛᴜs ❱═⊱❁۪۪
-║ <b>@Real_Pirates 🏴‍☠️</b>
+║   <b>⎈ @Real_Pirates 🏴‍☠️</b>
 ║╭━━━━━━━━━━━━━━━➣
 ║┣⪼<b>🕵 ғᴇᴄʜᴇᴅ Msɢ :</b> <code>{}</code>
 ║┃
@@ -85,7 +85,7 @@ class  Script(object):
 ║┃
 ║┣⪼<b>🔁 Fɪʟᴛᴇʀᴇᴅ Msɢ :</b> <code>{}</code>
 ║┃
-║┣⪼<b>📊 Cᴜʀʀᴇɴᴛ Sᴛᴀᴛᴜs:</b> <code>{}</code>
+║┣⪼<b>📊 Sᴛᴀᴛᴜs:</b> <code>{}</code>
 ║┃
 ║┣⪼<b>𖨠 Pᴇʀᴄᴇɴᴛᴀɢᴇ:</b> <code>{}</code> %
 ║╰━━━━━━━━━━━━━━━➣ 
