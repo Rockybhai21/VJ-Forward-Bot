@@ -191,14 +191,14 @@ async def copy(user, bot, msg, m, sts):
         await bot.send_cached_media(
               chat_id=sts.get('TO'),
               file_id=msg.get("media"),
-              caption=msg.get("caption"),
+              caption=None
               reply_markup=msg.get('button'),
               protect_content=msg.get("protect"))
      else:
         await bot.copy_message(
               chat_id=sts.get('TO'),
               from_chat_id=sts.get('FROM'),    
-              caption=msg.get("caption"),
+              caption=None
               message_id=msg.get("msg_id"),
               reply_markup=msg.get('button'),
               protect_content=msg.get("protect"))
@@ -221,7 +221,9 @@ async def forward(user, bot, msg, m, sts, protect):
            chat_id=sts.get('TO'),
            from_chat_id=sts.get('FROM'), 
            protect_content=protect,
-           message_ids=msg)
+           message_ids=msg
+           caption=None
+     )
    except FloodWait as e:
      await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
      await asyncio.sleep(e.value)
