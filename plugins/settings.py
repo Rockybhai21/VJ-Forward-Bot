@@ -660,58 +660,68 @@ async def filters_buttons(user_id):
        InlineKeyboardButton('✅' if filters['audio'] else '❌',
                     callback_data=f'settings#updatefilter-audio-{filters["audio"]}')
        ],[
-       InlineKeyboardButton('⫷ back',
+       InlineKeyboardButton('📝 Hide Caption',
+                    callback_data=f'settings_#updatefilter-hide_caption-{filter["hide_caption"]}'),
+       InlineKeyboardButton('✅' if filter['hide_caption'] else '❌',
+                    callback_data=f'settings#updatefilter-hide_caption-{filter["hide_caption"]}')
+       ],[
+       InlineKeyboardButton('⫷ Back',
                     callback_data="settings#main"),
-       InlineKeyboardButton('next ⫸',
+       InlineKeyboardButton('Next ⫸',
                     callback_data="settings#nextfilters")
        ]]
-  return InlineKeyboardMarkup(buttons) 
+  return InlineKeyboardMarkup(buttons)
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
-async def next_filters_buttons(user_id):
+async def filters_buttons(user_id):
   filter = await get_configs(user_id)
   filters = filter['filters']
   buttons = [[
+       InlineKeyboardButton('🏷️ Forward tag',
+                    callback_data=f'settings_#updatefilter-forward_tag-{filter["forward_tag"]}'),
+       InlineKeyboardButton('✅' if filter['forward_tag'] else '❌',
+                    callback_data=f'settings#updatefilter-forward_tag-{filter["forward_tag"]}')
        ],[
-       InlineKeyboardButton('🎤 Voices',
-                    callback_data=f'settings_#updatefilter-voice-{filters["voice"]}'),
-       InlineKeyboardButton('✅' if filters['voice'] else '❌',
-                    callback_data=f'settings#updatefilter-voice-{filters["voice"]}')
+       InlineKeyboardButton('🖍️ Texts',
+                    callback_data=f'settings_#updatefilter-text-{filters["text"]}'),
+       InlineKeyboardButton('✅' if filters['text'] else '❌',
+                    callback_data=f'settings#updatefilter-text-{filters["text"]}')
        ],[
-       InlineKeyboardButton('🎭 Animations',
-                    callback_data=f'settings_#updatefilter-animation-{filters["animation"]}'),
-       InlineKeyboardButton('✅' if filters['animation'] else '❌',
-                    callback_data=f'settings#updatefilter-animation-{filters["animation"]}')
+       InlineKeyboardButton('📁 Documents',
+                    callback_data=f'settings_#updatefilter-document-{filters["document"]}'),
+       InlineKeyboardButton('✅' if filters['document'] else '❌',
+                    callback_data=f'settings#updatefilter-document-{filters["document"]}')
        ],[
-       InlineKeyboardButton('🃏 Stickers',
-                    callback_data=f'settings_#updatefilter-sticker-{filters["sticker"]}'),
-       InlineKeyboardButton('✅' if filters['sticker'] else '❌',
-                    callback_data=f'settings#updatefilter-sticker-{filters["sticker"]}')
+       InlineKeyboardButton('🎞️ Videos',
+                    callback_data=f'settings_#updatefilter-video-{filters["video"]}'),
+       InlineKeyboardButton('✅' if filters['video'] else '❌',
+                    callback_data=f'settings#updatefilter-video-{filters["video"]}')
        ],[
-       InlineKeyboardButton('▶️ Skip duplicate',
-                    callback_data=f'settings_#updatefilter-duplicate-{filter["duplicate"]}'),
-       InlineKeyboardButton('✅' if filter['duplicate'] else '❌',
-                    callback_data=f'settings#updatefilter-duplicate-{filter["duplicate"]}')
+       InlineKeyboardButton('📷 Photos',
+                    callback_data=f'settings_#updatefilter-photo-{filters["photo"]}'),
+       InlineKeyboardButton('✅' if filters['photo'] else '❌',
+                    callback_data=f'settings#updatefilter-photo-{filters["photo"]}')
        ],[
-       InlineKeyboardButton('📊 Poll',
-                    callback_data=f'settings_#updatefilter-poll-{filters["poll"]}'),
-       InlineKeyboardButton('✅' if filters['poll'] else '❌',
-                    callback_data=f'settings#updatefilter-poll-{filters["poll"]}')
+       InlineKeyboardButton('🎧 Audios',
+                    callback_data=f'settings_#updatefilter-audio-{filters["audio"]}'),
+       InlineKeyboardButton('✅' if filters['audio'] else '❌',
+                    callback_data=f'settings#updatefilter-audio-{filters["audio"]}')
        ],[
-       InlineKeyboardButton('🔒 Secure message',
-                    callback_data=f'settings_#updatefilter-protect-{filter["protect"]}'),
-       InlineKeyboardButton('✅' if filter['protect'] else '❌',
-                    callback_data=f'settings#updatefilter-protect-{filter["protect"]}')
+       InlineKeyboardButton('📝 Hide Caption',
+                    callback_data=f'settings_#updatefilter-hide_caption-{filter["hide_caption"]}'),
+       InlineKeyboardButton('✅' if filter['hide_caption'] else '❌',
+                    callback_data=f'settings#updatefilter-hide_caption-{filter["hide_caption"]}')
        ],[
-       InlineKeyboardButton('⫷ back', 
-                    callback_data="settings#filters"),
-       InlineKeyboardButton('End ⫸',
-                    callback_data="settings#main")
+       InlineKeyboardButton('⫷ Back',
+                    callback_data="settings#main"),
+       InlineKeyboardButton('Next ⫸',
+                    callback_data="settings#nextfilters")
        ]]
-  return InlineKeyboardMarkup(buttons) 
+  return InlineKeyboardMarkup(buttons)
+
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
