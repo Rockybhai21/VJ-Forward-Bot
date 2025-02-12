@@ -27,10 +27,19 @@ async def settings(client, message):
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
-@Client.on_callback_query(filters.regex(r'^settings'))
-async def settings_query(bot, query):
-  user_id = query.from_user.id
-  i, type = query.data.split("#")
+@Client.on_callback_query(filters.regex(r"^settings_#updatefilter-hide_caption-(True|False)"))
+async def toggle_hide_caption(client, query):
+    user_id = query.from_user.id
+    current_status = query.data.split("-")[-1]  # Get current status (True/False)
+    new_status = current_status == "False"  # Toggle the value
+
+    # Update the setting in the database
+    await update_configs(user_id, "hide_caption", new_status)
+
+    # Notify user and refresh buttons
+    await query.answer(f"Hide Caption {'Enabled ✅' if new_status else 'Disabled ❌'}")
+    await query.message.edit_reply_markup(reply_markup=await filters_buttons(user_id))
+
   buttons = [[InlineKeyboardButton('back', callback_data="settings#main")]]
   if type=="main":
      await query.message.edit_text(
