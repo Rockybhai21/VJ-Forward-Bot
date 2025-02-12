@@ -217,28 +217,23 @@ async def copy(user, bot, msg, m, sts):
 
 async def forward(user, bot, msg, m, sts, protect):
     try:
-        message = await bot.get_messages(sts.get('FROM'), msg)
-        chat_id = sts.get('TO')
+        for message_id in msg:
+            message = await bot.get_messages(sts.get('FROM'), message_id)
+            if message.photo or message.video:
+                await bot.copy_message(
+                    chat_id=sts.get('TO'),
+                    from_chat_id=sts.get('FROM'),
+                    message_id=message_id,
+                    caption="Real"  # Remove caption
+                )
+            else:
+                await bot.forward_messages(
+                    chat_id=sts.get('TO'),
+                    from_chat_id=sts.get('FROM'),
+                    protect_content=protect,
+                    message_ids=message_id
+                )
 
-        if message.photo:
-            await bot.send_photo(
-                chat_id=chat_id,
-                photo=message.photo.file_id,
-                protect_content=protect
-            )
-        elif message.video:
-            await bot.send_video(
-                chat_id=chat_id,
-                video=message.video.file_id,
-                protect_content=protect
-            )
-        else:
-            await bot.forward_messages(
-                chat_id=chat_id,
-                from_chat_id=sts.get('FROM'),
-                protect_content=protect,
-                message_ids=msg
-            )
     except FloodWait as e:
         await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
         await asyncio.sleep(e.value)
