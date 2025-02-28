@@ -221,7 +221,7 @@ async def forward(user, bot, msg, m, sts, protect):
            chat_id=sts.get('TO'),
            from_chat_id=sts.get('FROM'), 
            protect_content=protect,
-           message_ids=msg
+           message_ids=msg,
            caption=None
      )
    except FloodWait as e:
