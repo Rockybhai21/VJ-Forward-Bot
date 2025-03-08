@@ -1,65 +1,63 @@
-import asyncio, logging, re
-from config import Config
-from pyrogram import Client as VJ, filters, idle
-from pyrogram.errors import FloodWait
-from typing import Union, Optional, AsyncGenerator
-from logging.handlers import RotatingFileHandler
-from plugins.regix import restart_forwards
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
+users_loop = {}
+batch_forward_sessions = {}  # Store batch session details per user
 
-VJBot = VJ(
-    "VJ-Forward-Bot",
-    bot_token=Config.BOT_TOKEN,
-    api_id=Config.API_ID,
-    api_hash=Config.API_HASH,
-    sleep_threshold=120,
-    plugins=dict(root="plugins")
-)
-
-def extract_chat_and_message_id(link):
-    pattern = r"t\.me/(?P<chat>[^/]+)/(?P<msg_id>\d+)"
-    match = re.search(pattern, link)
-    if match:
-        return match.group("chat"), int(match.group("msg_id"))
-    return None, None
-
-@VJBot.on_message(filters.command("batch_forward"))
+@VJBot.on_message(filters.command("batch_forward") & filters.private)
 async def batch_forward(client, message):
+    user_id = message.chat.id
     args = message.text.split()
+
     if len(args) != 3:
-        await message.reply("Usage: /batch_forward <first_msg_link> <last_msg_link>")
-        return
-    
-    first_link, last_link = args[1], args[2]
-    chat, first_msg_id = extract_chat_and_message_id(first_link)
-    _, last_msg_id = extract_chat_and_message_id(last_link)
-    
-    if not chat or not first_msg_id or not last_msg_id:
-        await message.reply("Invalid message links. Make sure both links are from the same chat.")
-        return
-    
-    await message.reply(f"Starting batch forwarding from {first_msg_id} to {last_msg_id}...")
-    
-    for msg_id in range(first_msg_id, last_msg_id + 1):
+        return await message.reply("Usage: `/batch_forward <first_msg_link> <last_msg_link>`")
+
+    try:
+        # Extract message IDs
+        start_id = int(args[1].split("/")[-1])
+        last_id = int(args[2].split("/")[-1])
+
+        if last_id < start_id:
+            return await message.reply("Invalid range! The last message must be after the first message.")
+
+        # Ask how many messages to skip
+        skip_msg = await client.ask(
+            user_id,
+            "<b>❪ SET MESSAGE SKIPING NUMBER ❫</b>\n\n"
+            "<b>Skip the message as much as you enter the number and the rest of the message will be forwarded</b>\n"
+            "Default Skip Number = <code>0</code>\n"
+            "<code>eg: You enter 0 = 0 message skipped\n You enter 5 = 5 messages skipped</code>\n\n"
+            "/cancel - cancel this process"
+        )
         try:
-            await client.forward_messages(message.chat.id, chat, msg_id)
-            await asyncio.sleep(2)  # Prevent flood limits
-        except FloodWait as e:
-            await asyncio.sleep(e.value)
-        except Exception as e:
-            await message.reply(f"Skipping message {msg_id}: {e}")
-    
-    await message.reply("Batch forwarding completed! ✅")
+            skip_count = int(skip_msg.text.strip())
+            if skip_count < 0:
+                return await message.reply("Invalid input! Please enter a number 0 or greater.")
+        except ValueError:
+            return await message.reply("Invalid input! Please enter a valid number.")
 
-async def main():
-    await VJBot.start()
-    bot_info  = await VJBot.get_me()
-    await restart_forwards(VJBot)
-    print("Bot Started.")
-    await idle()
+        # Calculate actual messages to forward
+        total_msgs = (last_id - start_id + 1) - skip_count
+        if total_msgs <= 0:
+            return await message.reply("Skipping too many messages! Nothing left to forward.")
 
-if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(main())
+        # Store batch session details for confirmation
+        batch_forward_sessions[user_id] = {
+            "start_id": start_id + skip_count,
+            "last_id": last_id,
+            "total_msgs": total_msgs
+        }
+
+        # Ask for confirmation
+        buttons = [
+            [InlineKeyboardButton("✅ Yes", callback_data=f"start_batch_{user_id}")],
+            [InlineKeyboardButton("❌ No", callback_data="cancel_batch")]
+        ]
+        markup = InlineKeyboardMarkup(buttons)
+
+        await message.reply(
+            f"You're about to forward **{total_msgs} messages**.\n\nConfirm to proceed:",
+            reply_markup=markup
+        )
+
+    except ValueError:
+        await message.reply("Invalid links! Make sure you are providing valid Telegram message links.")
