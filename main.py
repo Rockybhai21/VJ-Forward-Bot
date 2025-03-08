@@ -113,5 +113,6 @@ async def stop_batch(_, message):
     else:
         await message.reply("No active batch process to cancel.")
 
-# ✅ Start the bot
-VJBot.run()
+if __name__ == "__main__":
+    VJBot.run()  # ✅ This starts the bot properly
+
