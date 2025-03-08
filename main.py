@@ -61,3 +61,13 @@ async def batch_forward(client, message):
 
     except ValueError:
         await message.reply("Invalid links! Make sure you are providing valid Telegram message links.")
+
+@VJBot.on_message(filters.command("cancel"))
+async def stop_batch(_, message):
+    user_id = message.chat.id
+
+    if user_id in users_loop and users_loop[user_id]:
+        users_loop[user_id] = False
+        await message.reply("Batch forwarding has been stopped successfully.")
+    else:
+        await message.reply("No active batch process to cancel.")
