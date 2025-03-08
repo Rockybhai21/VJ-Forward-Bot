@@ -18,8 +18,7 @@ if __name__ == "__main__":
         api_hash=Config.API_HASH,
         sleep_threshold=120,
         plugins=dict(root="plugins")
-
-
+    )  
 users_loop = {}
 batch_forward_sessions = {}
 
