@@ -191,14 +191,14 @@ async def copy(user, bot, msg, m, sts):
         await bot.send_cached_media(
               chat_id=sts.get('TO'),
               file_id=msg.get("media"),
-              caption=None,
+              caption=Pirates,
               reply_markup=msg.get('button'),
               protect_content=msg.get("protect"))
      else:
         await bot.copy_message(
               chat_id=sts.get('TO'),
               from_chat_id=sts.get('FROM'),    
-              caption=None,
+              caption=Pirates,
               message_id=msg.get("msg_id"),
               reply_markup=msg.get('button'),
               protect_content=msg.get("protect"))
@@ -222,7 +222,7 @@ async def forward(user, bot, msg, m, sts, protect):
            from_chat_id=sts.get('FROM'), 
            protect_content=protect,
            message_ids=msg,
-           caption=None
+           caption=Pirates
      )
    except FloodWait as e:
      await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
@@ -267,7 +267,7 @@ async def edit(user, msg, title, status, sts):
    estimated_total_time = TimeFormatter(milliseconds=estimated_total_time)
    estimated_total_time = estimated_total_time if estimated_total_time != '' else '0 s'
    if status in ["cancelled", "completed"]:
-      button.append([InlineKeyboardButton('• ᴄᴏᴍᴘʟᴇᴛᴇᴅ ​•', url='https://t.me/VJ_BOTZ')])
+      button.append([InlineKeyboardButton('• ᴄᴏᴍᴘʟᴇᴛᴇᴅ ​•', url='https://t.me/Real_Pirates')])
    else:
       button.append([InlineKeyboardButton('• ᴄᴀɴᴄᴇʟ', 'terminate_frwd')])
    await msg_edit(msg, text, InlineKeyboardMarkup(button))
