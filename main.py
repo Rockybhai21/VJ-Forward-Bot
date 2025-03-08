@@ -1,14 +1,15 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from config import API_ID, API_HASH, BOT_TOKEN  # Ensure credentials are imported
+from config import Config  # ✅ Correctly import Config class
 
-# ✅ Initialize the bot BEFORE using it
+# ✅ Initialize the bot correctly
 VJBot = Client(
-    "VJ-Forward-Bot",
-    api_id=API_ID,
-    api_hash=API_HASH,
-    bot_token=BOT_TOKEN
+    Config.BOT_SESSION,  # Uses the session name from config
+    api_id=Config.API_ID,
+    api_hash=Config.API_HASH,
+    bot_token=Config.BOT_TOKEN
 )
+
 
 users_loop = {}
 batch_forward_sessions = {}
