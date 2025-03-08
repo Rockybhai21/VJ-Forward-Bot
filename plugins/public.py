@@ -121,6 +121,12 @@ async def confirm_batch_forward(client, query: CallbackQuery):
         await query.message.reply(f"Error: {str(e)}")
     finally:
         users_loop.pop(user_id, None)
+        
+@VJBot.on_callback_query(filters.regex(r"^cancel_batch$"))
+async def cancel_batch_forward(client, query: CallbackQuery):
+    user_id = query.message.chat.id
+    batch_forward_sessions.pop(user_id, None)  # Remove session if exists
+    await query.message.edit_text("Batch forwarding canceled.")
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
