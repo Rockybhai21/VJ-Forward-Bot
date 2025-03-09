@@ -93,7 +93,7 @@ async def run(bot, message):
         reply_markup=reply_markup
     )
     STS(forward_id).store(chat_id, toid, int(skipno.text), int(last_msg_id))
-@VJBot.on_callback_query(filters.regex(r"^start_batch_(\d+)$"))
+@Client.on_callback_query(filters.regex(r"^start_batch_(\d+)$"))
 async def confirm_batch_forward(client, query: CallbackQuery):
     user_id = int(query.matches[0].group(1))
 
@@ -122,7 +122,7 @@ async def confirm_batch_forward(client, query: CallbackQuery):
     finally:
         users_loop.pop(user_id, None)
         
-@VJBot.on_callback_query(filters.regex(r"^cancel_batch$"))
+@Client.on_callback_query(filters.regex(r"^cancel_batch$"))
 async def cancel_batch_forward(client, query: CallbackQuery):
     user_id = query.message.chat.id
     batch_forward_sessions.pop(user_id, None)  # Remove session if exists
