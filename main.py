@@ -14,7 +14,7 @@ from plugins.regix import restart_forwards
 # Ask Doubt on telegram @KingVJ01
 
 if __name__ == "__main__":
-    VJBot = Client(
+    VJBot = VJ(
         "VJ-Forward-Bot",
         bot_token=Config.BOT_TOKEN,
         api_id=Config.API_ID,
