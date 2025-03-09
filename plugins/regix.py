@@ -188,32 +188,20 @@ async def pub_(bot, message):
 async def copy(user, bot, msg, m, sts):
    try:                               
      if msg.get("media") and msg.get("caption"):
-        # Check media type: Forward Videos & Documents with captions, Photos without captions
-        if "video" in msg.get("media") or "document" in msg.get("media"):
-            await bot.send_cached_media(
-                chat_id=sts.get('TO'),
-                file_id=msg.get("media"),
-                caption=msg.get("caption"),  # Keep caption for Videos & Documents
-                reply_markup=msg.get('button'),
-                protect_content=msg.get("protect")
-            )
-        else:  # Forward photos/images without captions
-            await bot.send_cached_media(
-                chat_id=sts.get('TO'),
-                file_id=msg.get("media"),
-                caption=None,  # Remove caption for photos/images
-                reply_markup=msg.get('button'),
-                protect_content=msg.get("protect")
-            )
+        await bot.send_cached_media(
+              chat_id=sts.get('TO'),
+              file_id=msg.get("media"),
+              caption=msg.get("caption"),
+              reply_markup=msg.get('button'),
+              protect_content=msg.get("protect"))
      else:
         await bot.copy_message(
-            chat_id=sts.get('TO'),
-            from_chat_id=sts.get('FROM'),    
-            caption=None,
-            message_id=msg.get("msg_id"),
-            reply_markup=msg.get('button'),
-            protect_content=msg.get("protect")
-        )
+              chat_id=sts.get('TO'),
+              from_chat_id=sts.get('FROM'),    
+              caption=msg.get("caption"),
+              message_id=msg.get("msg_id"),
+              reply_markup=msg.get('button'),
+              protect_content=msg.get("protect"))
    except FloodWait as e:
      await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
      await asyncio.sleep(e.value)
