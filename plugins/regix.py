@@ -186,41 +186,36 @@ async def pub_(bot, message):
 # Ask Doubt on telegram @KingVJ01
 
 async def copy(user, bot, msg, m, sts):
-    try:
-        if msg.get("media"):
-            # Get the original caption
-            original_caption = msg.get("caption")
+import re  # Import regex module for link removal
 
-            # If it's an image (photo) and has no caption, set a default caption
-            if "photo" in msg["media"] and not original_caption:
-                new_caption = "<blockquote><b><a href="https://t.me/+2Vo8l_oVOsllYjI1">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></blockquote>"  # Change this as needed
-            else:
-                new_caption = original_caption  # Keep original caption for other media types
+def remove_tags_links(text):
+    """Removes HTML tags and links from captions."""
+    text = re.sub(r"<.*?>", "", text)  # Remove HTML tags
+    text = re.sub(r"https?://\S+|www\.\S+", "", text)  # Remove links
+    return text.strip()
 
-            await bot.send_cached_media(
-                chat_id=sts.get('TO'),
-                file_id=msg.get("media"),
-                caption=new_caption,  # Only modify caption for images
-                reply_markup=msg.get('button'),
-                protect_content=msg.get("protect")
-            )
-        else:
-            await bot.copy_message(
-                chat_id=sts.get('TO'),
-                from_chat_id=sts.get('FROM'),
-                caption=msg.get("caption"),
-                message_id=msg.get("msg_id"),
-                reply_markup=msg.get('button'),
-                protect_content=msg.get("protect")
-            )
-    except FloodWait as e:
-        await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
-        await asyncio.sleep(e.value)
-        await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
-        await copy(user, bot, msg, m, sts)
-    except Exception as e:
-        print(e)
-        sts.add('deleted')
+def custom_caption(msg, caption):
+    if msg.media:
+        if msg.video or msg.document or msg.audio or msg.photo:
+            media = getattr(msg, msg.media.value, None)
+            if media:
+                file_name = getattr(media, 'file_name', '')
+                file_size = getattr(media, 'file_size', '')
+                fcaption = getattr(msg, 'caption', '')
+
+                # Remove tags and links from existing caption
+                if fcaption:
+                    fcaption = remove_tags_links(fcaption.html)
+                else:
+                    # Set a default caption if it's an image with no caption
+                    if msg.photo:
+                        fcaption = "<blockquote><b><a href="https://t.me/II_Way_to_Success_II">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></blockquote>"  # Change as needed
+
+                if caption:
+                    return caption.format(filename=file_name, size=get_size(file_size), caption=fcaption)
+                return fcaption
+    return None
+
 
 
 # Don't Remove Credit Tg - @VJ_Botz
@@ -340,7 +335,7 @@ def custom_caption(msg, caption):
                 else:
                     # Set a default caption if the media is an image and has no existing caption
                     if msg.photo:
-                        fcaption = "<blockquote><b><a href="https://t.me/+2Vo8l_oVOsllYjI1">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></blockquote>"  # Change this as needed
+                        fcaption = "<blockquote><b><a href="https://t.me/II_Way_to_Success_II">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></blockquote>"  # Change this as needed
 
                 if caption:
                     return caption.format(filename=file_name, size=get_size(file_size), caption=fcaption)
