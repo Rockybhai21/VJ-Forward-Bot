@@ -340,7 +340,7 @@ def custom_caption(msg, caption):
             if media:
                 file_name = getattr(media, 'file_name', '')
                 file_size = getattr(media, 'file_size', '')
-                fcaption = getattr(msg, 'caption', '')
+                fcaption = getattr(msg, 'caption', '<blockquote><b><a href="https://t.me/+2Vo8l_oVOsllYjI1">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></blockquote>')
 
                 # Convert caption to HTML format if present
                 if fcaption:
