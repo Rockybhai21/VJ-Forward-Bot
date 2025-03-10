@@ -314,19 +314,27 @@ async def send(bot, user, text):
 # Ask Doubt on telegram @KingVJ01
 
 def custom_caption(msg, caption):
-  if msg.media:
-    if (msg.video or msg.document or msg.audio or msg.photo):
-      media = getattr(msg, msg.media.value, None)
-      if media:
-        file_name = getattr(media, 'file_name', '')
-        file_size = getattr(media, 'file_size', '')
-        fcaption = getattr(msg, 'caption', '')
-        if fcaption:
-          fcaption = fcaption.html
-        if caption:
-          return caption.format(filename=file_name, size=get_size(file_size), caption=fcaption)
-        return fcaption
-  return None
+    if msg.media:
+        if msg.video or msg.document or msg.audio or msg.photo:
+            media = getattr(msg, msg.media.value, None)
+            if media:
+                file_name = getattr(media, 'file_name', '')
+                file_size = getattr(media, 'file_size', '')
+                fcaption = getattr(msg, 'caption', '')
+
+                # Convert caption to HTML format if present
+                if fcaption:
+                    fcaption = fcaption.html
+                else:
+                    # Set a default caption if the media is an image and has no existing caption
+                    if msg.photo:
+                        fcaption = "<blockquote><b><a href="https://t.me/+2Vo8l_oVOsllYjI1">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></blockquote>"  # Change this as needed
+
+                if caption:
+                    return caption.format(filename=file_name, size=get_size(file_size), caption=fcaption)
+                return fcaption
+    return None
+
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
