@@ -186,30 +186,42 @@ async def pub_(bot, message):
 # Ask Doubt on telegram @KingVJ01
 
 async def copy(user, bot, msg, m, sts):
-   try:                               
-     if msg.get("media") and msg.get("caption"):
-        await bot.send_cached_media(
-              chat_id=sts.get('TO'),
-              file_id=msg.get("media"),
-              caption=msg.get("caption"),
-              reply_markup=msg.get('button'),
-              protect_content=msg.get("protect"))
-     else:
-        await bot.copy_message(
-              chat_id=sts.get('TO'),
-              from_chat_id=sts.get('FROM'),    
-              caption=msg.get("caption"),
-              message_id=msg.get("msg_id"),
-              reply_markup=msg.get('button'),
-              protect_content=msg.get("protect"))
-   except FloodWait as e:
-     await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
-     await asyncio.sleep(e.value)
-     await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
-     await copy(user, bot, msg, m, sts)
-   except Exception as e:
-     print(e)
-     sts.add('deleted')
+    try:
+        if msg.get("media"):
+            # Get the original caption
+            original_caption = msg.get("caption")
+
+            # If it's an image (photo) and has no caption, set a default caption
+            if "photo" in msg["media"] and not original_caption:
+                new_caption = "<blockquote><b><a href="https://t.me/+2Vo8l_oVOsllYjI1">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></blockquote>"  # Change this as needed
+            else:
+                new_caption = original_caption  # Keep original caption for other media types
+
+            await bot.send_cached_media(
+                chat_id=sts.get('TO'),
+                file_id=msg.get("media"),
+                caption=new_caption,  # Only modify caption for images
+                reply_markup=msg.get('button'),
+                protect_content=msg.get("protect")
+            )
+        else:
+            await bot.copy_message(
+                chat_id=sts.get('TO'),
+                from_chat_id=sts.get('FROM'),
+                caption=msg.get("caption"),
+                message_id=msg.get("msg_id"),
+                reply_markup=msg.get('button'),
+                protect_content=msg.get("protect")
+            )
+    except FloodWait as e:
+        await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
+        await asyncio.sleep(e.value)
+        await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
+        await copy(user, bot, msg, m, sts)
+    except Exception as e:
+        print(e)
+        sts.add('deleted')
+
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
