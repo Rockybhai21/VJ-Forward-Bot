@@ -187,13 +187,13 @@ async def pub_(bot, message):
 
 async def copy(user, bot, msg, m, sts):
     try:
-        if msg.get("media"):
+        if "media" in msg and msg["media"]:
             # Get cleaned caption
             new_caption = custom_caption(msg, msg.get("caption"))
 
             await bot.send_cached_media(
                 chat_id=sts.get('TO'),
-                file_id=msg.get("media"),
+                file_id=msg["media"] if isinstance(msg["media"], str) else msg["media"].file_id,
                 caption=new_caption,
                 reply_markup=msg.get('button'),
                 protect_content=msg.get("protect")
@@ -212,16 +212,9 @@ async def copy(user, bot, msg, m, sts):
         await copy(user, bot, msg, m, sts)
     except Exception as e:
         print(f"Error in copy function: {e}")
-    except FloodWait as e:
-        await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
-        await asyncio.sleep(e.value)
-        await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
-        await copy(user, bot, msg, m, sts)
-    except Exception as e:
-        print(e)
-        sts.add('deleted')
 
-async def remove_tags_links(text):
+
+def remove_tags_links(text):
     """Removes HTML tags and links from captions."""
     text = re.sub(r"<.*?>", "", text)  # Remove HTML tags
     text = re.sub(r"https?://\S+|www\.\S+", "", text)  # Remove links
