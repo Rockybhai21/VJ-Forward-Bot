@@ -188,20 +188,13 @@ async def pub_(bot, message):
 async def copy(user, bot, msg, m, sts):
     try:
         if msg.get("media"):
-            # Get original caption and clean it
-            original_caption = msg.get("caption")
-            cleaned_caption = remove_tags_links(original_caption) if original_caption else None
-
-            # If it's an image (photo) and has no caption, set a default caption
-            if "photo" in msg["media"] and not cleaned_caption:
-                new_caption = '<blockquote><b><a href="https://t.me/II_Way_to_Success_II">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></b></blockquote>'  # Default caption
-            else:
-                new_caption = cleaned_caption  # Use cleaned caption for other media types
+            # Get cleaned caption
+            new_caption = custom_caption(msg, msg.get("caption"))
 
             await bot.send_cached_media(
                 chat_id=sts.get('TO'),
                 file_id=msg.get("media"),
-                caption=new_caption,  # Apply cleaned caption logic
+                caption=new_caption,
                 reply_markup=msg.get('button'),
                 protect_content=msg.get("protect")
             )
@@ -214,6 +207,11 @@ async def copy(user, bot, msg, m, sts):
                 reply_markup=msg.get('button'),
                 protect_content=msg.get("protect")
             )
+    except FloodWait as e:
+        await asyncio.sleep(e.value)
+        await copy(user, bot, msg, m, sts)
+    except Exception as e:
+        print(f"Error in copy function: {e}")
     except FloodWait as e:
         await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
         await asyncio.sleep(e.value)
@@ -340,15 +338,15 @@ def custom_caption(msg, caption):
             if media:
                 file_name = getattr(media, 'file_name', '')
                 file_size = getattr(media, 'file_size', '')
-                fcaption = getattr(msg, 'caption', '<blockquote><b><a href="https://t.me/+2Vo8l_oVOsllYjI1">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></blockquote>')
+                fcaption = getattr(msg, 'caption', '')
 
-                # Convert caption to HTML format if present
+                # If the message has a caption, remove HTML tags and links
                 if fcaption:
-                    fcaption = fcaption.html
+                    fcaption = remove_tags_links(fcaption.html)
                 else:
-                    # Set a default caption if the media is an image and has no existing caption
+                    # Set a default caption if it's an image and has no caption
                     if msg.photo:
-                        fcaption = '<blockquote><b><a href="https://t.me/II_Way_to_Success_II">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></blockquote>'  # Change this as needed
+                        fcaption = '<blockquote><b><a href="https://t.me/II_Way_to_Success_II">📷 Default Image Caption 📷</a></b></blockquote>'  # Change as needed
 
                 if caption:
                     return caption.format(filename=file_name, size=get_size(file_size), caption=fcaption)
