@@ -343,7 +343,7 @@ def custom_caption(msg, caption):
                 else:
                     # Set a default caption if the media is an image and has no existing caption
                     if msg.photo:
-                        fcaption = "<blockquote><b><a href="https://t.me/II_Way_to_Success_II">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></blockquote>"  # Change this as needed
+                        fcaption = '<blockquote><b><a href="https://t.me/II_Way_to_Success_II">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></blockquote>'  # Change this as needed
 
                 if caption:
                     return caption.format(filename=file_name, size=get_size(file_size), caption=fcaption)
