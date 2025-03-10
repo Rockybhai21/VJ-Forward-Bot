@@ -186,8 +186,6 @@ async def pub_(bot, message):
 # Ask Doubt on telegram @KingVJ01
 
 async def copy(user, bot, msg, m, sts):
-import re  # Import regex module for link removal
-
 def remove_tags_links(text):
     """Removes HTML tags and links from captions."""
     text = re.sub(r"<.*?>", "", text)  # Remove HTML tags
