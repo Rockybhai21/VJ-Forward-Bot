@@ -223,6 +223,11 @@ async def copy(user, bot, msg, m, sts):
         print(e)
         sts.add('deleted')
 
+async def remove_tags_links(text):
+    """Removes HTML tags and links from captions."""
+    text = re.sub(r"<.*?>", "", text)  # Remove HTML tags
+    text = re.sub(r"https?://\S+|www\.\S+", "", text)  # Remove links
+    return text.strip()
 
 
 
