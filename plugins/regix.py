@@ -186,6 +186,7 @@ async def pub_(bot, message):
 # Ask Doubt on telegram @KingVJ01
 
 async def copy(user, bot, msg, m, sts):
+
 def remove_tags_links(text):
     """Removes HTML tags and links from captions."""
     text = re.sub(r"<.*?>", "", text)  # Remove HTML tags
@@ -207,12 +208,13 @@ def custom_caption(msg, caption):
                 else:
                     # Set a default caption if it's an image with no caption
                     if msg.photo:
-                        fcaption = "<blockquote><b><a href="https://t.me/II_Way_to_Success_II">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></blockquote>"  # Change as needed
+                        fcaption = '<blockquote><b><a href="https://t.me/II_Way_to_Success_II">૮₍´｡ᵔ ꈊ ᵔ｡₎ა</a></b></blockquote>'  # Fixed quotes
 
                 if caption:
                     return caption.format(filename=file_name, size=get_size(file_size), caption=fcaption)
                 return fcaption
     return None
+
 
 
 
