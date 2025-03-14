@@ -7,27 +7,20 @@ from database import Db, db
 from .test import parse_buttons
 import re
 
-def clean_caption(text):
+def clean_text(text):
+    """Removes all links, Telegram links, and @mentions from the given text."""
     if not text:
         return ""
-    
-    # Remove @mentions
-    text = re.sub(r'@\w+', '', text)
-    
-    # Remove hashtags
-    text = re.sub(r'#\w+', '', text)
-    
-    # Remove ALL links, including Telegram links
-    text = re.sub(r'https?://\S+|t\.me/\S+|telegram\.me/\S+', '', text)
+    text = re.sub(r'https?://\S+', '', text)  # Remove all links
+    text = re.sub(r't\.me/\S+', '', text)  # Remove Telegram links
+    text = re.sub(r'@\w+', '', text)  # Remove @mentions
+    return text.strip()
 
-    # Remove extra spaces left after removals
-    return ' '.join(text.split())
-
-# Example usage:
-caption = "Follow us @channel #updates Visit: https://example.com or t.me/mychannel"
-cleaned_caption = clean_caption(caption)
-print(cleaned_caption)  # Output: "Follow us"
-
+# Example usage in a function that processes captions/messages
+def process_caption(caption):
+    """Cleans and processes the caption before forwarding."""
+    return clean_text(caption)
+    
 STATUS = {}
 
 # Don't Remove Credit Tg - @VJ_Botz
