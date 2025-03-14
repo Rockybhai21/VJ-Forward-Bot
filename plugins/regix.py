@@ -33,6 +33,13 @@ TEXT = Script.TEXT
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
+def clean_text(text):
+    """Removes all links, Telegram links, and @mentions from the given text."""
+    text = re.sub(r'https?://\S+', '', text)  # Remove all links
+    text = re.sub(r't\.me/\S+', '', text)  # Remove Telegram links
+    text = re.sub(r'@\w+', '', text)  # Remove @mentions
+    return text.strip()
+
 @Client.on_callback_query(filters.regex(r'^start_public'))
 async def pub_(bot, message):
     user = message.from_user.id
