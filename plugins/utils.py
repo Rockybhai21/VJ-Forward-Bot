@@ -5,6 +5,28 @@
 import time as tm
 from database import Db, db
 from .test import parse_buttons
+import re
+
+def clean_caption(text):
+    if not text:
+        return ""
+    
+    # Remove @mentions
+    text = re.sub(r'@\w+', '', text)
+    
+    # Remove hashtags
+    text = re.sub(r'#\w+', '', text)
+    
+    # Remove ALL links, including Telegram links
+    text = re.sub(r'https?://\S+|t\.me/\S+|telegram\.me/\S+', '', text)
+
+    # Remove extra spaces left after removals
+    return ' '.join(text.split())
+
+# Example usage:
+caption = "Follow us @channel #updates Visit: https://example.com or t.me/mychannel"
+cleaned_caption = clean_caption(caption)
+print(cleaned_caption)  # Output: "Follow us"
 
 STATUS = {}
 
