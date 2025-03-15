@@ -8,7 +8,7 @@ from pyrogram import Client as VJ, idle
 from typing import Union, Optional, AsyncGenerator
 from logging.handlers import RotatingFileHandler
 from plugins.regix import restart_forwards, clean_text  # Import function
-
+from pyrogram import Client, filters
 # When processing a forwarded message, clean its caption
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
