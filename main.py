@@ -24,8 +24,8 @@ if __name__ == "__main__":
         plugins=dict(root="plugins")
     )  
 
-    @Client.on_message(filters.text | filters.media)
-    async def handle_message(client, message):
+@Client.on_message(filters.text | filters.media)
+async def handle_message(client, message):
     caption = message.caption if message.caption else ""
     cleaned_caption = clean_text(caption)  # Apply cleaning function
 
