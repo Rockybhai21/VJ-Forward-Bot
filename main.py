@@ -10,10 +10,6 @@ from logging.handlers import RotatingFileHandler
 from plugins.regix import restart_forwards, clean_text  # Import function
 
 # When processing a forwarded message, clean its caption
-caption = message.caption
-if caption:
-    caption = clean_text(caption)  # Remove links and mentions before sending
-
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
@@ -27,6 +23,15 @@ if __name__ == "__main__":
         sleep_threshold=120,
         plugins=dict(root="plugins")
     )  
+
+    @Client.on_message(filters.text | filters.media)
+    async def handle_message(client, message):
+    caption = message.caption if message.caption else ""
+    cleaned_caption = clean_text(caption)  # Apply cleaning function
+
+    # Now use `cleaned_caption` instead of `caption`
+    await client.send_message(chat_id=message.chat.id, text=cleaned_caption)
+   
     async def iter_messages(
         self,
         chat_id: Union[int, str],
