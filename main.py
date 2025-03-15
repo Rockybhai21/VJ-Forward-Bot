@@ -70,15 +70,16 @@ async def handle_message(client, message):
             for message in messages:
                 yield message
                 current += 1
-               
-    async def main():
-        await VJBot.start()
-        bot_info  = await VJBot.get_me()
-        await restart_forwards(VJBot)
-        print("Bot Started.")
-        await idle()
 
-    asyncio.get_event_loop().run_until_complete(main())
+async def main():
+    await VJBot.start()
+    bot_info  = await VJBot.get_me()
+    await restart_forwards(VJBot)
+    print("Bot Started.")
+    await idle()  # Keeps the bot running
+
+asyncio.run(main())  # ✅ Fixed method to start bot
+
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
