@@ -7,9 +7,8 @@ from config import Config
 from pyrogram import Client as VJ, idle
 from typing import Union, Optional, AsyncGenerator
 from logging.handlers import RotatingFileHandler
-from plugins.regix import restart_forwards, clean_text  # Import function
-from pyrogram import Client, filters
-# When processing a forwarded message, clean its caption
+from plugins.regix import restart_forwards
+
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
@@ -23,15 +22,6 @@ if __name__ == "__main__":
         sleep_threshold=120,
         plugins=dict(root="plugins")
     )  
-
-@Client.on_message(filters.text | filters.media)
-async def handle_message(client, message):
-    caption = message.caption if message.caption else ""
-    cleaned_caption = clean_text(caption)  # Apply cleaning function
-
-    # Now use `cleaned_caption` instead of `caption`
-    await client.send_message(chat_id=message.chat.id, text=cleaned_caption)
-   
     async def iter_messages(
         self,
         chat_id: Union[int, str],
@@ -70,16 +60,15 @@ async def handle_message(client, message):
             for message in messages:
                 yield message
                 current += 1
+               
+    async def main():
+        await VJBot.start()
+        bot_info  = await VJBot.get_me()
+        await restart_forwards(VJBot)
+        print("Bot Started.")
+        await idle()
 
-async def main():
-    await VJBot.start()
-    bot_info  = await VJBot.get_me()
-    await restart_forwards(VJBot)
-    print("Bot Started.")
-    await idle()  # Keeps the bot running
-
-asyncio.run(main())  # ✅ Fixed method to start bot
-
+    asyncio.get_event_loop().run_until_complete(main())
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
