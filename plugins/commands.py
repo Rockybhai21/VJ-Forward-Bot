@@ -13,7 +13,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMedi
 import psutil
 import time as time
 from os import environ, execle, system
-
+from batch_forward import batch_forward  # Adjust path if needed
 START_TIME = time.time()
 
 # Don't Remove Credit Tg - @VJ_Botz
