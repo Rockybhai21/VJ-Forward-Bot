@@ -10,7 +10,6 @@ from .test import get_configs, update_configs, CLIENT, parse_buttons
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from .db import connect_user_db
 import json
-from pyrogram import Client, filters, enums
 
 CLIENT = CLIENT()
 
@@ -18,59 +17,30 @@ CLIENT = CLIENT()
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
-@Client.on_message(filters.group & filters.forwarded)
-async def forward_from_group(bot, message):
-    """ Handles forwarded messages from groups """
-    try:
-        if message.forward_from_chat:  
-            forward_chat_id = message.forward_from_chat.id  
-            last_msg_id = message.forward_from_message_id  
+@Client.on_message(filters.private & filters.command(["setgroup"]))
+async def set_forwarding_group(bot, message):
+    """ Allows user to set a custom forwarding group """
+    if len(message.command) < 2:
+        return await message.reply("Usage: /setgroup <group_id>")
 
-            # Try forwarding to the detected group
-            await bot.forward_messages(forward_chat_id, message.chat.id, last_msg_id)
+    group_id = message.command[1]
+    with open("config.json", "w") as file:
+        json.dump({"forward_group": group_id}, file)
 
-        elif message.sender_chat:  # If forwarded from an anonymous admin
-            await message.reply("This message was sent by an **anonymous admin**. Please send the message link instead.")
-    
-    except Exception as e:
-        print(f"Error forwarding from group: {e}")
-        await message.reply("Failed to forward. Please check bot permissions.")
+    await message.reply(f"Forwarding group set to `{group_id}`")
 
-@Client.on_message(filters.group & filters.text)
-async def extract_and_forward_links(bot, message):
-    """ Detects Telegram links in messages and extracts them """
-    match = re.search(r"(https://t\.me/\S+/\d+)", message.text)  # Detect message link
-    if match:
-        link = match.group(1)  # Extract the link
-        try:
-            await bot.send_message(message.chat.id, f"Forwarding message: {link}")
-        except Exception as e:
-            print(f"Error forwarding link: {e}")
-
-@Client.on_message(filters.group & filters.forwarded)
-async def forward_to_custom_group(bot, message):
-    """ Forwards group messages to a user-defined target group """
+@Client.on_message(filters.private & filters.command(["getgroup"]))
+async def get_forwarding_group(bot, message):
+    """ Returns the currently set forwarding group """
     try:
         with open("config.json", "r") as file:
             config = json.load(file)
-            forward_chat_id = config.get("forward_group")
+            forward_chat_id = config.get("forward_group", "Not Set")
     except:
-        return await message.reply("No forwarding group set. Use /setgroup <group_id>.")
+        forward_chat_id = "Not Set"
 
-    if forward_chat_id:
-        try:
-            await bot.forward_messages(forward_chat_id, message.chat.id, message.message_id)
-            await message.reply(f"Forwarded to `{forward_chat_id}`")
-        except Exception as e:
-            print(f"Error forwarding: {e}")
-            await message.reply("Failed to forward. Check bot permissions.")
+    await message.reply(f"Current Forwarding Group: `{forward_chat_id}`")
 
-@Client.on_message(filters.command('settings'))
-async def settings(client, message):
-   await message.reply_text(
-     "<b>Hᴇʀᴇ Is Tʜᴇ Sᴇᴛᴛɪɴɢs Pᴀɴᴇʟ⚙\n\nᴄʜᴀɴɢᴇ ʏᴏᴜʀ sᴇᴛᴛɪɴɢs ᴀs ʏᴏᴜʀ ᴡɪsʜ 👇</b>",
-     reply_markup=main_buttons()
-     )
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
