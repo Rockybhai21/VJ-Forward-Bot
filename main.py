@@ -9,6 +9,7 @@ from typing import Union, Optional, AsyncGenerator
 from logging.handlers import RotatingFileHandler
 from plugins.regix import restart_forwards
 from batch_forward import batch_forward  # ✅ Import batch forwarding
+from pyrogram import filters
 
 @VJ.on_message(filters.command("batch_forward"))  # ✅ Register command
 async def handle_batch_forward(client, message):
