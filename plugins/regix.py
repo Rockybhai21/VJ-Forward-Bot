@@ -39,6 +39,15 @@ TEXT = Script.TEXT
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
+async def msg_edit(m, text, retry_btn=None, delete_after=False):
+    """ Edits message text with error handling """
+    try:
+        await m.edit_text(text, reply_markup=retry_btn)
+        if delete_after:
+            await asyncio.sleep(5)
+            await m.delete()
+    except Exception as e:
+        print(f"Error editing message: {e}")
 
 
 
