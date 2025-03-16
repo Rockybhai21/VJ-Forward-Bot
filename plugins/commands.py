@@ -14,7 +14,112 @@ import psutil
 import time as time
 from os import environ, execle, system
 from batch_forward import batch_forward  # Adjust path if needed
+
 START_TIME = time.time()
+
+# Dictionary to store user selections temporarily
+user_data = {}
+
+@Client.on_message(filters.command("batch_forward"))
+async def batch_forward(client, message):
+    user_id = message.from_user.id
+    user_data[user_id] = {"batch_link": None, "source_channels": [], "dest_channel": None}
+    
+    if len(message.command) < 2:
+        await message.reply_text("Please provide a batch link to start forwarding.")
+        return
+    
+    batch_link = message.command[1]
+    user_data[user_id]["batch_link"] = batch_link
+    
+    # Ask the user to select the destination channel
+    buttons = [
+        [InlineKeyboardButton("Channel 1", callback_data=f"dest_channel_@Channel1")],
+        [InlineKeyboardButton("Channel 2", callback_data=f"dest_channel_@Channel2")],
+        [InlineKeyboardButton("Cancel ❌", callback_data="cancel_batch")]
+    ]
+    await message.reply_text("Select the **destination channel**:", reply_markup=InlineKeyboardMarkup(buttons))
+
+@Client.on_callback_query(filters.regex(r"^dest_channel_"))
+async def set_dest_channel(client, query: CallbackQuery):
+    user_id = query.from_user.id
+    dest_channel = query.data.split("_")[1]
+    
+    user_data[user_id]["dest_channel"] = dest_channel
+    
+    # Ask the user to select source channels
+    buttons = [
+        [InlineKeyboardButton("Source 1", callback_data=f"source_channel_@Source1")],
+        [InlineKeyboardButton("Source 2", callback_data=f"source_channel_@Source2")],
+        [InlineKeyboardButton("Confirm ✅", callback_data="confirm_sources")],
+        [InlineKeyboardButton("Cancel ❌", callback_data="cancel_batch")]
+    ]
+    await query.message.edit_text(f"Selected Destination: **{dest_channel}**\nNow, select **source channels**:", reply_markup=InlineKeyboardMarkup(buttons))
+
+@Client.on_callback_query(filters.regex(r"^source_channel_"))
+async def add_source_channel(client, query: CallbackQuery):
+    user_id = query.from_user.id
+    source_channel = query.data.split("_")[1]
+    
+    if source_channel not in user_data[user_id]["source_channels"]:
+        user_data[user_id]["source_channels"].append(source_channel)
+    
+    await query.answer(f"Added {source_channel} ✅")
+
+@Client.on_callback_query(filters.regex(r"^confirm_sources"))
+async def confirm_forwarding(client, query: CallbackQuery):
+    user_id = query.from_user.id
+    batch_link = user_data[user_id]["batch_link"]
+    source_channels = user_data[user_id]["source_channels"]
+    dest_channel = user_data[user_id]["dest_channel"]
+
+    if not source_channels:
+        await query.answer("Please select at least one source channel!", show_alert=True)
+        return
+    
+    buttons = [[InlineKeyboardButton("Start Forwarding 🚀", callback_data="start_forwarding")],
+               [InlineKeyboardButton("Cancel ❌", callback_data="cancel_batch")]]
+    
+    await query.message.edit_text(f"✅ **Batch Forwarding Setup Complete!**\n\n"
+                                  f"📌 **Batch Link:** {batch_link}\n"
+                                  f"📥 **Source Channels:** {', '.join(source_channels)}\n"
+                                  f"📤 **Destination Channel:** {dest_channel}\n\n"
+                                  "Click **Start Forwarding** to begin!", reply_markup=InlineKeyboardMarkup(buttons))
+
+@Client.on_callback_query(filters.regex(r"^start_forwarding"))
+async def start_forwarding(client, query: CallbackQuery):
+    user_id = query.from_user.id
+    batch_link = user_data[user_id]["batch_link"]
+    source_channels = user_data[user_id]["source_channels"]
+    dest_channel = user_data[user_id]["dest_channel"]
+
+    await query.message.edit_text("🚀 **Starting Forwarding...** Please wait.")
+
+    chat_id = extract_chat_id(batch_link)
+    if not chat_id:
+        await query.message.edit_text("❌ Invalid batch link.")
+        return
+    
+    try:
+        # Fetch messages from the batch link and forward
+        async for msg in client.get_chat_history(chat_id, limit=10):  # Adjust limit as needed
+            await msg.forward(dest_channel)
+        await query.message.edit_text("✅ Forwarding Completed!")
+    except Exception as e:
+        await query.message.edit_text(f"❌ Error: {str(e)}")
+
+@Client.on_callback_query(filters.regex(r"^cancel_batch"))
+async def cancel_batch(client, query: CallbackQuery):
+    await query.message.edit_text("❌ **Batch Forwarding Cancelled.**")
+    user_id = query.from_user.id
+    user_data.pop(user_id, None)
+
+def extract_chat_id(link):
+    """Extract chat ID from the provided Telegram link."""
+    match = re.search(r"(https?://t\.me/|@)([\w\d_]+)", link)
+    if match:
+        return match.group(2)  # Return username or ID
+    return None
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
@@ -61,9 +166,6 @@ async def restart(client, message):
     system("git pull -f && pip3 install --no-cache-dir -r requirements.txt")
     execle(sys.executable, sys.executable, "main.py", environ)
 
-@Client.on_message(filters.private & filters.command("batch_forward"))
-async def handle_batch_forward(client, message):
-    await batch_forward(client, message)
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
