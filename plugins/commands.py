@@ -14,6 +14,7 @@ import psutil
 import time as time
 from os import environ, execle, system
 from batch_forward import batch_forward  # Adjust path if needed
+from pyrogram.types import CallbackQuery
 
 START_TIME = time.time()
 
