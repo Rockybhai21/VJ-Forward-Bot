@@ -79,7 +79,7 @@ async def run(bot, message):
           return await message.reply("<code>You didn't added any bot. Please add a bot using /settings !</code>")
     channels = await db.get_user_channels(user_id)
     if not channels:
-       return await message.reply_text("please set a to channel in /settings before forwarding")
+       return await message.reply_text("please set a channel in /settings before forwarding")
     if len(channels) > 1:
        for channel in channels:
           buttons.append([KeyboardButton(f"{channel['title']}")])
@@ -142,6 +142,7 @@ async def run(bot, message):
         reply_markup=reply_markup
     )
     STS(forward_id).store(chat_id, toid, int(skipno.text), int(last_msg_id))
+
 @Client.on_callback_query(filters.regex(r"^start_batch_(\d+)$"))
 async def confirm_batch_forward(client, query: CallbackQuery):
     user_id = int(query.matches[0].group(1))
