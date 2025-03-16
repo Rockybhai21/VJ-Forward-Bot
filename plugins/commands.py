@@ -61,6 +61,10 @@ async def restart(client, message):
     system("git pull -f && pip3 install --no-cache-dir -r requirements.txt")
     execle(sys.executable, sys.executable, "main.py", environ)
 
+@Client.on_message(filters.private & filters.command("batch_forward"))
+async def handle_batch_forward(client, message):
+    await batch_forward(client, message)
+
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
