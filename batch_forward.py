@@ -3,6 +3,10 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, 
 import re
 from database import db  # Assuming database module handles user data
 
+async def batch_forward(client, message):
+    # Your forwarding logic here
+    pass  # Replace this with actual code
+
 @Client.on_message(filters.private & filters.command(["batch_forward"]))
 async def batch_forward_handler(bot: Client, message: Message):
     user_id = message.from_user.id
