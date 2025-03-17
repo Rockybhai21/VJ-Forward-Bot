@@ -14,10 +14,6 @@ from pyrogram.errors.exceptions.not_acceptable_406 import ChannelPrivate as Priv
 from pyrogram.errors.exceptions.bad_request_400 import ChannelInvalid, ChatAdminRequired, UsernameInvalid, UsernameNotModified, ChannelPrivate
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 import json
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
 
 @Client.on_message(filters.group & filters.forwarded)
 async def forward_from_group(bot, message):
@@ -48,6 +44,34 @@ async def extract_and_forward_links(bot, message):
         except Exception as e:
             print(f"Error forwarding link: {e}")
 
+@Client.on_message(filters.private & filters.text)
+async def forward_from_post_link(bot, message):
+    """ Starts forwarding messages from a specified post link """
+    post_link = message.text.strip()
+    
+    # Regular expression to match the Telegram post link
+    regex = re.compile(r"(https://)?(t\.me/|telegram\.me/|telegram\.dog/)(c/)?(\d+|[a-zA-Z_0-9]+)/(\d+)$")
+    match = regex.match(post_link)
+    
+    if not match:
+        return await message.reply("Invalid link. Please provide a valid Telegram post link.")
+    
+    chat_id = match.group(4)
+    last_msg_id = int(match.group(5))
+    
+    if chat_id.isnumeric():
+        chat_id = int("-100" + chat_id)  # Convert to group ID format if necessary
+
+    # Start forwarding messages from the specified message ID
+    try:
+        # Fetch the total number of messages to forward (you can set a limit)
+        total_messages_to_forward = 10  # Example: forward 10 messages
+        for msg_id in range(last_msg_id, last_msg_id + total_messages_to_forward):
+            await bot.forward_messages(chat_id, chat_id, msg_id)
+            await message.reply(f"Forwarded message ID: {msg_id}")
+    except Exception as e:
+        await message.reply(f"An error occurred while forwarding: {str(e)}")
+
 @Client.on_message(filters.group & filters.forwarded)
 async def forward_to_custom_group(bot, message):
     """ Forwards group messages to a user-defined target group """
@@ -66,7 +90,6 @@ async def forward_to_custom_group(bot, message):
             print(f"Error forwarding: {e}")
             await message.reply("Failed to forward. Check bot permissions.")
 
-
 @Client.on_message(filters.private & filters.command(["forward"]))
 async def run(bot, message):
     buttons = []
@@ -74,27 +97,27 @@ async def run(bot, message):
     user_id = message.from_user.id
     _bot = await db.get_bot(user_id)
     if not _bot:
-      _bot = await db.get_userbot(user_id)
-      if not _bot:
-          return await message.reply("<code>You didn't added any bot. Please add a bot using /settings !</code>")
+        _bot = await db.get_userbot(user_id)
+        if not _bot:
+            return await message.reply("<code>You didn't add any bot. Please add a bot using /settings!</code>")
     channels = await db.get_user_channels(user_id)
     if not channels:
-       return await message.reply_text("please set a channel in /settings before forwarding")
+        return await message.reply_text("Please set a channel in /settings before forwarding.")
     if len(channels) > 1:
-       for channel in channels:
-          buttons.append([KeyboardButton(f"{channel['title']}")])
-          btn_data[channel['title']] = channel['chat_id']
-       buttons.append([KeyboardButton("cancel")]) 
-       _toid = await bot.ask(message.chat.id, Script.TO_MSG.format(_bot['name'], _bot['username']), reply_markup=ReplyKeyboardMarkup(buttons, one_time_keyboard=True, resize_keyboard=True))
-       if _toid.text.startswith(('/', 'cancel')):
-          return await message.reply_text(Script.CANCEL, reply_markup=ReplyKeyboardRemove())
-       to_title = _toid.text
-       toid = btn_data.get(to_title)
-       if not toid:
-          return await message.reply_text("wrong channel choosen !", reply_markup=ReplyKeyboardRemove())
+        for channel in channels:
+            buttons.append([KeyboardButton(f"{channel['title']}")])
+            btn_data[channel['title']] = channel['chat_id']
+        buttons.append([KeyboardButton("cancel")]) 
+        _toid = await bot.ask(message.chat.id, Script.TO_MSG.format(_bot['name'], _bot['username']), reply_markup=ReplyKeyboardMarkup(buttons, one_time_keyboard=True, resize_keyboard=True))
+        if _toid.text.startswith(('/', 'cancel')):
+            return await message.reply_text(Script.CANCEL, reply_markup=ReplyKeyboardRemove())
+        to_title = _toid.text
+        toid = btn_data.get(to_title)
+        if not toid:
+            return await message.reply_text("Wrong channel chosen!", reply_markup=ReplyKeyboardRemove())
     else:
-       toid = channels[0]['chat_id']
-       to_title = channels[0]['title']
+        toid = channels[0]['chat_id']
+        to_title = channels[0]['title']
     fromid = await bot.ask(message.chat.id, Script.FROM_MSG, reply_markup=ReplyKeyboardRemove())
     if fromid.text and fromid.text.startswith('/'):
         await message.reply(Script.CANCEL)
@@ -111,15 +134,13 @@ async def run(bot, message):
     elif fromid.forward_from_chat.type in [enums.ChatType.CHANNEL, 'supergroup']:
         last_msg_id = fromid.forward_from_message_id
         chat_id = fromid.forward_from_chat.username or fromid.forward_from_chat.id
-        if last_msg_id == None:
-           return await message.reply_text("**This may be a forwarded message from a group and sended by anonymous admin. instead of this please send last message link from group**")
+        if last_msg_id is None:
+            return await message.reply_text("**This may be a forwarded message from a group and sent by an anonymous admin. Instead of this, please send the last message link from the group.**")
     else:
-        await message.reply_text("**invalid !**")
+        await message.reply_text("**Invalid!**")
         return 
     try:
         title = (await bot.get_chat(chat_id)).title
-  #  except ChannelInvalid:
-        #return await fromid.reply("**Given source chat is copyrighted channel/group. you can't forward messages from there**")
     except (PrivateChat, ChannelPrivate, ChannelInvalid):
         title = "private" if fromid.text else fromid.forward_from_chat.title
     except (UsernameInvalid, UsernameNotModified):
@@ -171,7 +192,7 @@ async def confirm_batch_forward(client, query: CallbackQuery):
         await query.message.reply(f"Error: {str(e)}")
     finally:
         users_loop.pop(user_id, None)
-        
+
 @Client.on_callback_query(filters.regex(r"^cancel_batch$"))
 async def cancel_batch_forward(client, query: CallbackQuery):
     user_id = query.message.chat.id
