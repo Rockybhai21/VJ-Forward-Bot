@@ -264,11 +264,11 @@ async def forward(user, bot, msg, m, sts, protect):
         async for message in bot.iter_messages(source_chat_id, offset_id=start_from_message_id, reverse=True):
             await bot.forward_messages(target_chat_id, source_chat_id, message.message_id, protect_content=protect)
    
-  except FloodWait as e:
-     await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
-     await asyncio.sleep(e.value)
-     await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
-     await forward(bot, msg, m, sts, protect)
+    except FloodWait as e:
+         await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
+         await asyncio.sleep(e.value)
+         await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
+         await forward(bot, msg, m, sts, protect)
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
