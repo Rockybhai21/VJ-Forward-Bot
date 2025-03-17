@@ -240,13 +240,31 @@ async def copy(user, bot, msg, m, sts):
 # Ask Doubt on telegram @KingVJ01
 
 async def forward(user, bot, msg, m, sts, protect):
-   try:                             
-     await bot.forward_messages(
-           chat_id=sts.get('TO'),
-           from_chat_id=sts.get('FROM'), 
-           protect_content=protect,
-           message_ids=msg)
-   except FloodWait as e:
+    """Forwards messages, starting from a specific message if a link is provided"""
+    
+    # Extract source channel and message ID from link
+    if isinstance(msg, str):  # If msg is a link instead of a list of message IDs
+        match = re.search(r"https://t\.me/c/(\d+)/(\d+)", msg)
+        if match:
+            source_chat_id = int("-100" + match.group(1))
+            start_from_message_id = int(match.group(2))
+        else:
+            return await m.reply("Invalid link. Please send a valid Telegram message link.")
+    else:
+        source_chat_id = sts.get('FROM')
+        start_from_message_id = msg[0] if isinstance(msg, list) else 1  # Default to first message
+
+    target_chat_id = sts.get('TO')
+
+    # Notify user that forwarding has started
+    await m.reply(f"✅ Forwarding messages from `{source_chat_id}` (starting from message ID `{start_from_message_id}`) to `{target_chat_id}`...")
+
+    # Forward messages in sequence
+    try:
+        async for message in bot.iter_messages(source_chat_id, offset_id=start_from_message_id, reverse=True):
+            await bot.forward_messages(target_chat_id, source_chat_id, message.message_id, protect_content=protect)
+   
+  except FloodWait as e:
      await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.value, sts)
      await asyncio.sleep(e.value)
      await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
