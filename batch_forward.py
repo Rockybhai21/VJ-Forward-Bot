@@ -1,45 +1,62 @@
 from pyrogram import Client, filters
-from pyrogram.errors import PeerIdInvalid, MessageIdInvalid
-import time
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+import re
+from database import db  # Assuming database module handles user data
 
-# Configurable batch size
-BATCH_SIZE = 5  
+@Client.on_message(filters.private & filters.command(["batch_forward"]))
+async def batch_forward_handler(bot: Client, message: Message):
+    user_id = message.from_user.id
+    _bot = await db.get_bot(user_id)
 
-@Client.on_message(filters.command("batch_forward"))
-async def batch_forward(bot, message):
-    chat_id = message.chat.id
+    if not _bot:
+        return await message.reply("You haven't added any bot. Please add a bot using /settings!")
 
-    # Ask user for the message link
-    await message.reply("🔗 Send me the link of the message you want to batch forward.")
+    channels = await db.get_user_channels(user_id)
+    if not channels:
+        return await message.reply("Please set a destination channel in /settings before forwarding.")
 
-    # Wait for the user’s response
-    user_response = await bot.listen(chat_id)
-    if not user_response.text:
-        return await message.reply("⚠️ Please send a valid Telegram message link.")
+    # Ask user to provide the message link
+    await message.reply("Please send the message link you want to forward.")
 
+    # Wait for user to send the link
+    link_msg = await bot.listen(message.chat.id)
+
+    # Extract chat ID and message ID from the provided link
+    link_match = re.search(r"https://t\.me/(c/)?(\d+)/(\d+)", link_msg.text)
+    if not link_match:
+        return await message.reply("Invalid link! Please provide a valid Telegram message link.")
+
+    chat_id = int(f"-100{link_match.group(2)}")
+    message_id = int(link_match.group(3))
+
+    # Generate channel selection buttons
+    buttons = [
+        [InlineKeyboardButton(channel["title"], callback_data=f"forward_to:{channel['chat_id']}:{chat_id}:{message_id}")]
+        for channel in channels
+    ]
+    buttons.append([InlineKeyboardButton("Cancel", callback_data="cancel_forward")])
+
+    await message.reply(
+        "Select the destination channel:",
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
+
+@Client.on_callback_query(filters.regex(r"forward_to:(-?\d+):(-?\d+):(\d+)"))
+async def forward_selected_channel(bot: Client, query: CallbackQuery):
+    _, target_chat_id, source_chat_id, msg_id = query.data.split(":")
+    
     try:
-        # Extract chat ID and message ID from the link
-        link_parts = user_response.text.split("/")
-        chat_username = link_parts[-3]
-        message_id = int(link_parts[-1])
+        target_chat_id = int(target_chat_id)
+        source_chat_id = int(source_chat_id)
+        msg_id = int(msg_id)
 
-        # Get the source chat and message
-        source_chat = await bot.get_chat(chat_username)
-        messages = await bot.get_messages(source_chat.id, message_ids=range(message_id, message_id + BATCH_SIZE))
+        # Forward the message to the selected channel
+        await bot.forward_messages(chat_id=target_chat_id, from_chat_id=source_chat_id, message_ids=msg_id)
 
-        if not messages:
-            return await message.reply("⚠️ No messages found for batch forwarding.")
+        await query.message.edit("✅ Message forwarded successfully!")
+    except Exception as e:
+        await query.message.edit(f"❌ Error forwarding message: {str(e)}")
 
-        await message.reply(f"✅ Found {len(messages)} messages! Starting batch forwarding...")
-
-        # Forward messages in batches
-        for i in range(0, len(messages), BATCH_SIZE):
-            batch = messages[i:i + BATCH_SIZE]
-            for msg in batch:
-                await msg.forward(chat_id)
-                time.sleep(1)  # Optional delay
-
-        await message.reply("🎉 Batch forwarding complete!")
-
-    except (PeerIdInvalid, MessageIdInvalid, ValueError, IndexError):
-        await message.reply("⚠️ Invalid message link. Please try again.")
+@Client.on_callback_query(filters.regex("cancel_forward"))
+async def cancel_forward(bot: Client, query: CallbackQuery):
+    await query.message.edit("❌ Forwarding canceled.")
