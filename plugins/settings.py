@@ -17,29 +17,6 @@ CLIENT = CLIENT()
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
-@Client.on_message(filters.private & filters.command(["setgroup"]))
-async def set_forwarding_group(bot, message):
-    """ Allows user to set a custom forwarding group """
-    if len(message.command) < 2:
-        return await message.reply("Usage: /setgroup <group_id>")
-
-    group_id = message.command[1]
-    with open("config.json", "w") as file:
-        json.dump({"forward_group": group_id}, file)
-
-    await message.reply(f"Forwarding group set to `{group_id}`")
-
-@Client.on_message(filters.private & filters.command(["getgroup"]))
-async def get_forwarding_group(bot, message):
-    """ Returns the currently set forwarding group """
-    try:
-        with open("config.json", "r") as file:
-            config = json.load(file)
-            forward_chat_id = config.get("forward_group", "Not Set")
-    except:
-        forward_chat_id = "Not Set"
-
-    await message.reply(f"Current Forwarding Group: `{forward_chat_id}`")
 
 
 # Don't Remove Credit Tg - @VJ_Botz
